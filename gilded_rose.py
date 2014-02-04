@@ -5,9 +5,9 @@ class GildedRose(object):
     def __init__(self, items):
         self.items = items
 
-    def increase_quality(self, item):
+    def increase_quality(self, item, by=1):
         if item.quality < 50:
-            item.quality += 1
+            item.quality += by
 
     def decrease_quality(self, item):
         if item.quality > 0:
@@ -21,12 +21,13 @@ class GildedRose(object):
 
             if item.name in ("Aged Brie", "Backstage passes to a TAFKAL80ETC concert"):
                 self.increase_quality(item)
+
                 if item.name == "Backstage passes to a TAFKAL80ETC concert":
-                    if item.sell_in < 11:
+                    if item.sell_in in range(6, 11):
                         self.increase_quality(item)
 
-                    if item.sell_in < 6:
-                        self.increase_quality(item)
+                    if item.sell_in in range(0, 6):
+                        self.increase_quality(item, by=2)
             else:
                 self.decrease_quality(item)
 

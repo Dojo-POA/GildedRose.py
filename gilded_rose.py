@@ -5,50 +5,71 @@ class GildedRose(object):
     def __init__(self, items):
         self.items = items
 
-    def increase_quality(self, item, by=1):
-        if item.quality < 50:
-            item.quality += by
-
-    def decrease_quality(self, item):
-        if item.quality > 0:
-            item.quality -= 1
-
     def update_quality(self):
         for item in self.items:
 
             if item.name == "Sulfuras, Hand of Ragnaros":
+                LegendaryItem(item).update()
                 continue
 
             if item.name == "Aged Brie":
-                self.increase_quality(item)
-                item.sell_in -= 1
-                if item.sell_in < 0:
-                    self.increase_quality(item)
+                AgedItem(item).update()
                 continue
 
             if item.name == "Backstage passes to a TAFKAL80ETC concert":
-                self.increase_quality(item)
-
-                if item.sell_in in range(6, 11):
-                    self.increase_quality(item)
-
-                if item.sell_in in range(0, 6):
-                    self.increase_quality(item, by=2)
-
-                item.sell_in -= 1
-
-                if item.sell_in < 0:
-                    item.quality = 0
-
+                TicketItem(item).update()
                 continue
 
 
-            self.decrease_quality(item)
+            RichItem(item).update()
 
-            item.sell_in -= 1
+class RichItem:
+    def __init__(self, item):
+        self.item = item
 
-            if item.sell_in < 0:
-                self.decrease_quality(item)
+    def update(self):
+        self.decrease_quality()
+
+        self.item.sell_in -= 1
+
+        if self.item.sell_in < 0:
+            self.decrease_quality()
+
+    def increase_quality(self, by=1):
+        if self.item.quality < 50:
+            self.item.quality += by
+
+    def decrease_quality(self):
+        if self.item.quality > 0:
+            self.item.quality -= 1
+
+
+class LegendaryItem(RichItem):
+    def update(self):
+        pass
+
+class AgedItem(RichItem):
+    def update(self):
+        self.increase_quality()
+        self.item.sell_in -= 1
+        if self.item.sell_in < 0:
+            self.increase_quality()
+
+class TicketItem(RichItem):
+
+    def update(self):
+        self.increase_quality()
+
+        if self.item.sell_in in range(6, 11):
+            self.increase_quality()
+
+        if self.item.sell_in in range(0, 6):
+            self.increase_quality(by=2)
+
+        self.item.sell_in -= 1
+
+        if self.item.sell_in < 0:
+            self.item.quality = 0
 
 
 class Item:

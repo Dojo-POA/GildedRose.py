@@ -34,14 +34,15 @@ class GildedRose(object):
 
             item.sell_in -= 1
 
-            if item.sell_in < 0:
-                if item.name != "Aged Brie":
-                    if item.name != "Backstage passes to a TAFKAL80ETC concert":
-                        self.decrease_quality(item)
-                    else:
-                        item.quality = 0
-                else:
+            if item.name == "Aged Brie":
+                if item.sell_in < 0:
                     self.increase_quality(item)
+            else:
+                if item.sell_in < 0:
+                    if item.name == "Backstage passes to a TAFKAL80ETC concert":
+                        item.quality = 0
+                    else:
+                        self.decrease_quality(item)
 
 
 class Item:
